@@ -3,7 +3,7 @@ module Habits
 
   # The habit class. Attached events describe activities etc.
   class Habit
-    attr_accessor :on_hold
+    attr_accessor :on_hold, :title
   
     def initialize(title)
       @title = title

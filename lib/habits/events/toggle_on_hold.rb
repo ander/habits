@@ -1,9 +1,9 @@
 require 'habits/event'
 
-module Habits
+module Habits::Events
   
   class ToggleOnHold
-    include Event
+    include Habits::Event
     
     def apply(habit)
       super

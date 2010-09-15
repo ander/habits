@@ -1,9 +1,9 @@
 require 'habits/event'
 
-module Habits
+module Habits::Events
 
   class Activity
-    include Event
+    include Habits::Event
     
     def initialize(duration=nil)
       @duration = duration

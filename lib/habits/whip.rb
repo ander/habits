@@ -1,16 +1,18 @@
+require 'habits/habit'
 
 module Habits
   
-  class Whip
+  module Whip
+    extend self
     
-    def check
-      
-    end
-    
-    def new_status_for(habit)
-      # 
+    def self.on_transition_to(status, &blk)
+      @@transitions ||= {}
+      @@transitions[status] = blk
     end
     
   end
   
 end
+
+config = File.join(Habits::Habit::HABITS_DIR, 'whip_config.rb')
+require config if File.exists?(config)

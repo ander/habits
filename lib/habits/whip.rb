@@ -5,13 +5,20 @@ module Habits
   module Whip
     extend self
     
-    def self.on_transition_to(status, &blk)
+    def on(status, &blk)
       @@transitions ||= {}
       @@transitions[status] = blk
     end
     
+    def check
+      Habit.all.each do |habit|
+        habit.update_status do
+          st = habit.status.value
+          @@transitions[st].call(habit) if @@transitions[st]
+        end
+      end
+    end
   end
-  
 end
 
 config = File.join(Habits::Habit::HABITS_DIR, 'whip_config.rb')

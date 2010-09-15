@@ -32,6 +32,7 @@ module Habits
       @events = []
     end
     
+    # Divide habit into simple habit parts
     def parts
       parts = []
       days = @days.clone.reverse
@@ -61,13 +62,13 @@ module Habits
     end
     
     def update_status
+      old_status = @status
       @status = parts.map{|part| Status.resolve(part)}.max
-      save
-    end
-    
-    def last_reset
-      reset_event = @events.reverse.detect{|e| e.is_a?(Habits::Events::Reset)}
-      reset_event ? reset_event.applied_at : @created_at
+      
+      if old_status != @status
+        yield if block_given?
+        save
+      end
     end
     
   end

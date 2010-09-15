@@ -1,36 +1,43 @@
 require 'fileutils'
 require 'yaml'
 
+require 'habits/status'
+
 module Habits
 
   # The habit class. Attached events describe activities etc.
   class Habit
-    STATUSES = [:green, :yellow, :red, :black]
     HABITS_DIR = File.join(ENV['HOME'], '.habits')
     
-    attr_reader :status, :title
+    def self.all
+      @@all ||= begin
+        habits = []
+        Dir.glob(File.join(HABITS_DIR, '*.habit')).each do |habit_file|
+          habits << YAML.load(File.read(habit_file))
+        end
+        habits
+      end
+    end
+    
+    attr_reader :title, :times, :days
     
     def initialize(title, times=1, days=['Mon'])
+      raise "Too many days" if days.size > times
       @title = title
-      @times_per_week = times
+      @times = times
       @days = days
-      @status = :green
       @on_hold = false
       @created_at = Time.now
       @events = []
     end
     
-    def self.all
-      habits = []
-      Dir.glob(File.join(HABITS_DIR, '*.habit')).each do |habit_file|
-        habits << YAML.load(File.read(habit_file))
+    def parts
+      parts = []
+      days = @days.clone.reverse
+      @times.times do |i|
+        parts << Habit.new("#{@title} part #{i+1}", 1, [days.pop].compact)
       end
-      habits
-    end
-    
-    def set_status(new_status)
-      raise "Invalid status" unless STATUSES.include?(new_status)
-      @status = new_status
+      parts
     end
     
     def add_event(event)
@@ -44,6 +51,7 @@ module Habits
     end
     
     def save
+      @@all = nil
       FileUtils.mkdir_p HABITS_DIR
       File.open(File.join(HABITS_DIR, filename), 'w') do |file|
         file.write self.to_yaml

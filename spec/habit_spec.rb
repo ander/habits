@@ -6,22 +6,37 @@ describe Habits::Habit do
     h.title.should == 'test title'
   end
   
-  it "should set valid statuses" do
-    h = Habits::Habit.new('habit one')
-    h.status.should == :green
-    h.set_status(:yellow)
-    h.status.should == :yellow
-    h.set_status(:green)
-    h.status.should == :green
-    h.set_status(:red)
-    h.status.should == :red
-    h.set_status(:black)
-    h.status.should == :black
+  it "should divide itself into parts (1)" do
+    h = Habits::Habit.new('habit one', 1, [])
+    parts = h.parts
+    parts.size.should == 1
+    parts.first.times.should == 1
+    parts.first.days.should be_empty
   end
   
-  it "should raise if trying to set invalid status" do
-    h = Habits::Habit.new('habit one')
-    lambda {h.set_status(:foobar)}.should raise_error('Invalid status')
+  it "should divide itself into parts (2)" do
+    h = Habits::Habit.new('habit one', 2, [])
+    parts = h.parts
+    parts.size.should == 2
+    parts[0].days.should be_empty
+    parts[1].days.should be_empty
+  end
+  
+  it "should divide itself into parts (3)" do
+    h = Habits::Habit.new('habit one', 2, ['Mon', 'Fri'])
+    parts = h.parts
+    parts.size.should == 2
+    parts[0].days.should == ['Mon']
+    parts[1].days.should == ['Fri']
+  end
+  
+  it "should divide itself into parts (4)" do
+    h = Habits::Habit.new('habit one', 3, ['Thu', 'Fri'])
+    parts = h.parts
+    parts.size.should == 3
+    parts[0].days.should == ['Thu']
+    parts[1].days.should == ['Fri']
+    parts[2].days.should be_empty
   end
   
 end

@@ -1,10 +1,11 @@
 require 'date'
+require 'time'
 
 module Habits
   class Status
     include Comparable
     
-    VALUES = [:green, :yellow, :red, :black]
+    VALUES = [:green, :yellow, :red, :missed, :on_hold]
     VALUES.each do |val|
       eval %Q(def self.#{val}; Status.new(#{val.inspect}) end)
     end
@@ -25,18 +26,17 @@ module Habits
     def self.resolve(habit, time=Time.now)
       statuses = []
       today = Date.today
-      days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
       
       habit.days.each do |day|
         activities = habit.activities_on_week(today.cweek, day)
         
         if activities.empty?
-          day_diff = days.index(day) - today.wday
+          day_diff = Time::RFC2822_DAY_NAME.index(day) - today.wday
           deadline = Time.mktime(today.year, today.month, 
                                  today.day + day_diff, 23, 59)
           
           if time > deadline
-            statuses << Status.black
+            statuses << Status.missed
           elsif time > (deadline - habit.red_zone)
             statuses << Status.red
           elsif time > (deadline - habit.yellow_zone)

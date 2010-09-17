@@ -16,6 +16,6 @@ Habits::Whip.on(:red) do |habit|
   dialog "[HABITS] #{habit.title} is now in RED!"
 end
 
-Habits::Whip.on(:black) do |habit|
+Habits::Whip.on(:missed) do |habit|
   dialog "[HABITS] #{habit.title} MISSED!"
 end

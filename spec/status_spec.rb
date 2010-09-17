@@ -27,10 +27,10 @@ describe Habits::Status do
     Habits::Status.resolve(h, last_day(1,23,59)).should == Habits::Status.red
   end
   
-  it "should resolve status black" do
+  it "should resolve status missed" do
     h = Habits::Habit.new(['Mon'])  
     
-    Habits::Status.resolve(h, last_day(2,0,0)).should == Habits::Status.black
+    Habits::Status.resolve(h, last_day(2,0,0)).should == Habits::Status.missed
   end
   
 end

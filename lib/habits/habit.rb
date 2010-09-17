@@ -28,7 +28,6 @@ module Habits
                    )
       @title, @days, @yellow_zone, @red_zone = title, days, yellow_zone, red_zone
       @status = Status.green
-      @on_hold = false
       @created_at = Time.now
       @events = []
     end
@@ -70,6 +69,11 @@ module Habits
       end
       activities = activities.select{|a| a.applied_at.strftime('%a') == day} if day
       activities
+    end
+    
+    def destroy
+      FileUtils.rm_f File.join(HABITS_DIR, filename)
+      @@all = nil
     end
     
   end

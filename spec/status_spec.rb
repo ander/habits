@@ -21,7 +21,7 @@ describe Habits::Status do
   end
   
   it "should resolve status red" do
-    h = Habits::Habit.new(['Mon'])  
+    h = Habits::Habit.new(['Mon'])
     
     Habits::Status.resolve(h, last_day(1,18,0)).should == Habits::Status.red
     Habits::Status.resolve(h, last_day(1,23,59)).should == Habits::Status.red

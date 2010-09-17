@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+
+require 'habits/command_line'
+

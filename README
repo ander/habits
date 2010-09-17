@@ -3,3 +3,6 @@ Habits
 
 An experimental habit tracker.
 
+Tracks habits in weekly cycles (i.e. status of each habit is cleared weekly). 
+Each habit has a day or days associated with it. Habits expects activity on the habit on those days. If no activity is registered, habit goes first into yellow zone (e.g. 20 hours before deadline), then into red zone (e.g. 6 hours before), and finally into missed state. Transfer into each zone/state can be used to trigger commands.
+

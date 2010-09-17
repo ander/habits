@@ -20,7 +20,8 @@ module Habits
       end
     end
     
-    attr_reader :title, :days, :status, :yellow_zone, :red_zone
+    attr_reader :title, :days, :status
+    attr_accessor :yellow_zone, :red_zone
     
     def initialize(title, days=['Mon'], 
                    yellow_zone=20*60*60, # 24 hours before deadline,

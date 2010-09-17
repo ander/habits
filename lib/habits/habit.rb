@@ -2,6 +2,7 @@ require 'fileutils'
 require 'yaml'
 
 require 'habits/status'
+require 'habits/events/activity'
 
 module Habits
 
@@ -19,27 +20,15 @@ module Habits
       end
     end
     
-    attr_reader :title, :times, :days, :status
+    attr_reader :title, :days, :status
     
-    def initialize(title, times=1, days=['Mon'])
-      raise "Too many days" if days.size > times
+    def initialize(title, days=['Mon'])
       @title = title
-      @times = times
       @days = days
       @status = Status.green
       @on_hold = false
       @created_at = Time.now
       @events = []
-    end
-    
-    # Divide habit into simple habit parts
-    def parts
-      parts = []
-      days = @days.clone.reverse
-      @times.times do |i|
-        parts << Habit.new("#{@title} part #{i+1}", 1, [days.pop].compact)
-      end
-      parts
     end
     
     def add_event(event)
@@ -63,12 +52,22 @@ module Habits
     
     def update_status
       old_status = @status
-      @status = parts.map{|part| Status.resolve(part)}.max
+      @status = Status.resolve(self)
       
       if old_status != @status
         yield if block_given?
         save
       end
+    end
+    
+    def activities_on_week(week, day=nil)
+      activities = @events.select do |e| 
+        e.is_a?(Events::Activity) and Date.new(e.applied_at.year, 
+                                               e.applied_at.month,
+                                               e.applied_at.day).cweek == week
+      end
+      activities = activities.select{|a| a.applied_at.strftime('%a') == day} if day
+      activities
     end
     
   end

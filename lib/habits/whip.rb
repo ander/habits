@@ -10,7 +10,7 @@ module Habits
       @@transitions[status] = blk
     end
     
-    def check
+    def use
       Habit.all.each do |habit|
         habit.update_status do
           st = habit.status.value

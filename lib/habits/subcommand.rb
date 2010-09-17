@@ -5,7 +5,7 @@
 # * last argument can be optional if surrounded by []
 #
 # E.g.
-# Subcommand.register('create', ['TITLE', '[DAYS]']) do |title, days|
+# Subcommand.register('create', ['TITLE', '[DAYS]'], 'Create something..') do |title, days|
 #   ...
 # end
 # 

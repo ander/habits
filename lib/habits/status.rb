@@ -9,7 +9,7 @@ module Habits
       eval %Q(def self.#{val}; Status.new(#{val.inspect}) end)
     end
     
-    YELLOW_ZONE = 24*60*60 # 24 hours before deadline
+    YELLOW_ZONE = 20*60*60 # 24 hours before deadline
     RED_ZONE = 6*60*60     #  6 -"-
     
     attr_reader :value
@@ -25,19 +25,24 @@ module Habits
     
     # Resolves the status of a habit.
     # Status starts fresh every week.
-    def self.resolve(habit)
+    def self.resolve(habit, time=Time.now)
       statuses = []
       today = Date.today
+      days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
       
       habit.days.each do |day|
         activities = habit.activities_on_week(today.cweek, day)
         
         if activities.empty?
-          deadline = Time.mktime(today.year, today.month, today.day, 23, 59)
+          day_diff = days.index(day) - today.wday
+          deadline = Time.mktime(today.year, today.month, 
+                                 today.day + day_diff, 23, 59)
           
-          if Time.now > (deadline - RED_ZONE)
+          if time > deadline
+            statuses << Status.black
+          elsif time > (deadline - RED_ZONE)
             statuses << Status.red
-          elsif Time.now > (deadline - YELLOW_ZONE)
+          elsif time > (deadline - YELLOW_ZONE)
             statuses << Status.yellow
           else
             statuses << Status.green

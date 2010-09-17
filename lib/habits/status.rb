@@ -9,9 +9,6 @@ module Habits
       eval %Q(def self.#{val}; Status.new(#{val.inspect}) end)
     end
     
-    YELLOW_ZONE = 20*60*60 # 24 hours before deadline
-    RED_ZONE = 6*60*60     #  6 -"-
-    
     attr_reader :value
     
     def initialize(val)
@@ -40,9 +37,9 @@ module Habits
           
           if time > deadline
             statuses << Status.black
-          elsif time > (deadline - RED_ZONE)
+          elsif time > (deadline - habit.red_zone)
             statuses << Status.red
-          elsif time > (deadline - YELLOW_ZONE)
+          elsif time > (deadline - habit.yellow_zone)
             statuses << Status.yellow
           else
             statuses << Status.green

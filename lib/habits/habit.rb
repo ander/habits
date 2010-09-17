@@ -20,11 +20,13 @@ module Habits
       end
     end
     
-    attr_reader :title, :days, :status
+    attr_reader :title, :days, :status, :yellow_zone, :red_zone
     
-    def initialize(title, days=['Mon'])
-      @title = title
-      @days = days
+    def initialize(title, days=['Mon'], 
+                   yellow_zone=20*60*60, # 24 hours before deadline,
+                   red_zone=6*60*60      #  6 -"-
+                   )
+      @title, @days, @yellow_zone, @red_zone = title, days, yellow_zone, red_zone
       @status = Status.green
       @on_hold = false
       @created_at = Time.now

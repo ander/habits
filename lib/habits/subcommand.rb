@@ -11,12 +11,8 @@
 # 
 # Subcommand.parse
 #
-module Subcommand
-  extend self
-  @@default = nil
-  @@subs = {}
-  
-  def subs; @@subs end
+class Subcommand
+  attr_reader :subs
   
   class Cmd
     attr_reader :args, :desc, :blk
@@ -30,6 +26,7 @@ module Subcommand
       (@args + [@optional]).compact.join(' ')
     end
     
+    # Parse @call_args for this command
     def parse(args)
       if (args.size == @args.size) or (@optional and args.size == @args.size+1)
         @call_args = args
@@ -38,6 +35,7 @@ module Subcommand
       end
     end
     
+    # Trigger this command
     def call
       if @optional # provide nil for the optional arg in block if needed
         args = @call_args
@@ -48,41 +46,54 @@ module Subcommand
       end
     end
   end
+
+  def initialize
+    @default = nil
+    @subs = {}
+    yield if block_given?
+  end
   
+  # Register a command with name, arguments, description, and block (blk).
+  # The block is called with as many input args as you defined in 'args'
   def register(cmd_name, args, desc, &blk)
-    @@subs ||= {}
-    @@subs[cmd_name] = Cmd.new(args, desc, blk)
+    @subs ||= {}
+    @subs[cmd_name] = Cmd.new(args, desc, blk)
   end
   
+  # Set the default command to be called when just the executable is run.
   def default(&blk)
-    @@default = blk
+    @default = blk
   end
   
+  # Parse command line arguments according to registered commands.
   def parse(args=ARGV)
     if args.size == 0
-      @@default.call if @@default
+      @default.call if @default
       return
     end
     
-    sub = @@subs[args.shift]
+    sub = @subs[args.shift]
     
-    print_usage and return if sub.nil?
+    help and return if sub.nil?
     
     begin
       sub.parse(args)
       sub.call
     rescue Exception => e
       puts e.message
-      print_usage
+      help
     end
   end
   
-  def print_usage
+  # Print help of available commands.
+  def help
     puts "\nUsage: #{File.basename($0)} {command} arg1 arg2 ...\n\nCommand        Args"+
          ' '*32+"Description"
-    @@subs.keys.sort.each do |name|
-      printf("  %-12s %-35s %s\n\n", name, @@subs[name].args_str, @@subs[name].desc)
+    @subs.keys.sort.each do |name|
+      printf("  %-12s %-35s %s\n", name, @subs[name].args_str, @subs[name].desc)
     end
+    puts
     true
   end
+  
 end

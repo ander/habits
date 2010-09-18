@@ -20,6 +20,12 @@ module Habits
       end
     end
     
+    def self.find(title)
+      h = Habits::Habit.all.detect{|h| h.title == title.strip}
+      raise "No such habit found." unless h
+      h
+    end
+    
     attr_reader :title, :days, :status
     attr_accessor :yellow_zone, :red_zone
     

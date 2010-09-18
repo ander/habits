@@ -50,7 +50,6 @@ class Subcommand
   def initialize
     @default = nil
     @subs = {}
-    yield if block_given?
   end
   
   # Register a command with name, arguments, description, and block (blk).

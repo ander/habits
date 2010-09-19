@@ -25,16 +25,16 @@ sub.register('create', ['TITLE','DAYS'], 'Create a new habit.') do |title, days|
 end
   
 sub.register('list', [], 'List habits.') do
-  puts "\nHABIT                          DAYS                           STATUS     YELLOW/RED"
-  puts "===================================================================================\n"
+  puts "\nHABIT                     DAYS                           STATUS     YELLOW/RED"
+  puts "===============================================================================\n"
   Habits::Habit.all.each do |habit|
-    printf("%-30s %-30s %-10s [%dh / %dh]\n", 
+    printf("%-25s %-30s %-10s [%dh / %dh]\n", 
            habit.title, habit.days.join(','),
            habit.status.value.to_s.capitalize,
            (habit.yellow_zone / (60*60)),
            (habit.red_zone / (60*60)))
   end
-  puts "===================================================================================\n"
+  puts "===============================================================================\n"
   puts "\nTotal #{Habits::Habit.all.size} habits.\n"
 end
   

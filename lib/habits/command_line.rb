@@ -1,4 +1,5 @@
 require 'time'
+require 'date'
 require 'habits'
 require 'habits/subcommand'
 
@@ -35,7 +36,7 @@ sub.register('list', [], 'List habits.') do
            (habit.red_zone / (60*60)))
   end
   puts "===============================================================================\n"
-  puts "\nTotal #{Habits::Habit.all.size} habits.\n"
+  puts "\nWeek #{Date.today.cweek} | Total #{Habits::Habit.all.size} habits.\n\n"
 end
   
 sub.register('zones', ['TITLE','YELLOW_ZONE','RED_ZONE'], 

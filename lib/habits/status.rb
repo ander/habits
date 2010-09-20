@@ -25,17 +25,21 @@ module Habits
     # Status starts fresh every week.
     def self.resolve(habit, time=Time.now)
       statuses = []
-      today = Date.today
+      date = Date.new(time.year, time.month, time.day)
       
       habit.days.each do |day|
-        activities = habit.activities_on_week(today.cweek, day)
+        activities = habit.activities_on_week(date.cweek, day)
+        day_diff = Time::RFC2822_DAY_NAME.index(day) - date.wday
         
-        if activities.empty?
-          day_diff = Time::RFC2822_DAY_NAME.index(day) - today.wday
-          deadline = Time.mktime(today.year, today.month, 
-                                 today.day + day_diff, 23, 59)
+        if !activities.empty? or (day_diff > 0)
+          statuses << Status.green
+        else
+          deadline = Time.mktime(date.year, date.month, 
+                                 date.day + day_diff, 23, 59)
           
-          if time > deadline
+          if Date.new(deadline.year, deadline.month, deadline.day).cweek != date.cweek
+            statuses << Status.green
+          elsif time > deadline
             statuses << Status.missed
           elsif time > (deadline - habit.red_zone)
             statuses << Status.red
@@ -44,8 +48,6 @@ module Habits
           else
             statuses << Status.green
           end
-        else
-          statuses << Status.green
         end
       end
       statuses.max

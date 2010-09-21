@@ -6,7 +6,7 @@ spec = Gem::Specification.new do |spec|
   spec.name = 'habits'
   spec.version = '0.1'
   spec.executables = ['habits']
-  spec.files = ['README', 'LICENSE', 'bin/habits'] + Dir['lib/**/*.rb']
+  spec.files = ['README', 'LICENSE', 'bin/habits', 'whip_config.rb'] + Dir['lib/**/*.rb']
   spec.description = "A habit tracker. Tracks habits in weekly cycles."+
                      "Each habit has a day or days associated with it."+
                      "Habits expects activity on the habit on those days. "+

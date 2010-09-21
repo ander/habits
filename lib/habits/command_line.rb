@@ -63,8 +63,23 @@ sub.register('rename', ['TITLE', 'NEW_TITLE'], 'Rename habit.') do |title, new_t
   h.save
 end
 
-sub.default do
-  sub.subs['list'].blk.call
+sub.register('show', ['TITLE'], 'Show activity of habit.') do |title|
+  h = Habits::Habit.find(title)
+  
+  if h.events.empty?
+    puts "\nNo activity.\n\n"
+  else
+    puts "\n#{title} Activity:\n"+ ('='*(title.size)) + "==========\n"
+  
+    h.events.each do |event|
+      str = "  #{event.applied_at.strftime("%a %b %d %Y")}"
+      str += " #{event.duration} hours" if event.duration
+      puts str
+    end
+    puts
+  end
 end
+
+sub.default = 'list'
 
 sub.parse

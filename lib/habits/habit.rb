@@ -26,7 +26,7 @@ module Habits
       h
     end
     
-    attr_reader :title, :days, :status
+    attr_reader :title, :days, :status, :events
     attr_accessor :yellow_zone, :red_zone
     
     def initialize(title, days=['Mon'], 

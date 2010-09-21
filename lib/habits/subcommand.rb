@@ -1,15 +1,6 @@
-# A minimal command line parser which focuses on handling subcommands.
+#
+# A minimal command line parser for subcommands.
 # CMD SUBCOMMAND ARG1 ARG2 ...
-#
-# * default is used when just the command is given
-# * last argument can be optional if surrounded by []
-#
-# E.g.
-# Subcommand.register('create', ['TITLE', '[DAYS]'], 'Create something..') do |title, days|
-#   ...
-# end
-# 
-# Subcommand.parse
 #
 class Subcommand
   attr_reader :subs
@@ -61,7 +52,14 @@ class Subcommand
   
   # Set the default command to be called when just the executable is run.
   def default(&blk)
+    raise "No block given" unless blk
     @default = blk
+  end
+  
+  # Set the default command to be one of the registered subcommands
+  def default=(cmd_name)
+    raise "No subcommand #{cmd_name} registerd" if @subs[cmd_name].nil?
+    @default = @subs[cmd_name].blk
   end
   
   # Parse command line arguments according to registered commands.

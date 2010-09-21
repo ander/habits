@@ -36,7 +36,8 @@ module Habits
                    red_zone    = RED_ZONE,
                    events      = [])
       set_title(title)
-      @days, @yellow_zone, @red_zone = days, yellow_zone, red_zone
+      set_days(days)
+      @yellow_zone, @red_zone = yellow_zone, red_zone
       @status = Status.green
       @created_at = Time.now
       @events = events
@@ -91,6 +92,14 @@ module Habits
       raise "No spaces or commas allowed in habit title" if title =~ /[\s,,]+/
       @old_title = @title
       @title = title
+    end
+    
+    def set_days(days)
+      if days.detect{|d| Time::RFC2822_DAY_NAME.index(d).nil?}
+        raise "Valid days are #{Time::RFC2822_DAY_NAME.join(',')}"
+      else
+        @days = days
+      end
     end
     
     def split

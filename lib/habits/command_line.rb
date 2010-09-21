@@ -16,13 +16,8 @@ sub.register('delete', ['TITLE'], 'Delete habit.') do |title|
 end
   
 sub.register('create', ['TITLE','DAYS'], 'Create a new habit.') do |title, days|
-  days = days.split(',')
-  if days.detect{|d| Time::RFC2822_DAY_NAME.index(d).nil?}
-    puts "Valid days are #{Time::RFC2822_DAY_NAME.join(',')}"
-  else
-    Habits::Habit.new(title, days).save
-    puts "Habit \"#{title}\" created."
-  end
+  Habits::Habit.new(title, days.split(',')).save
+  puts "Habit \"#{title}\" created."
 end
   
 sub.register('list', [], 'List habits.') do
@@ -38,7 +33,7 @@ sub.register('list', [], 'List habits.') do
   puts "===============================================================================\n"
   puts "\nWeek #{Date.today.cweek} | Total #{Habits::Habit.all.size} habits.\n\n"
 end
-  
+
 sub.register('zones', ['TITLE','YELLOW_ZONE','RED_ZONE'], 
              "Set habit's yellow and red zones.") do |title, yellow, red|
   h = Habits::Habit.find(title)

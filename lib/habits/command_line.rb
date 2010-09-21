@@ -47,7 +47,7 @@ end
 sub.register('do', ['TITLE', '[HOURS]'], 
              'Add activity to habit, hours optional.') do |title, hours|
   h = Habits::Habit.find(title)
-  h.add_event(Habits::Events::Activity.new(hours ? hours.to_i : nil))
+  h.add_event(Habits::Events::Activity.new(hours ? hours.to_f : nil))
   puts "Activity added."
 end
 

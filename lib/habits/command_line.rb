@@ -55,7 +55,14 @@ sub.register('do', ['TITLE', '[HOURS]'],
   h.add_event(Habits::Events::Activity.new(hours ? hours.to_i : nil))
   puts "Activity added."
 end
-  
+
+sub.register('rename', ['TITLE', 'NEW_TITLE'], 'Rename habit.') do |title, new_title|
+  h = Habits::Habit.find(title)
+  h.set_title(new_title)
+  puts "Renamed #{title} -> #{new_title}"
+  h.save
+end
+
 sub.default do
   sub.subs['list'].blk.call
 end

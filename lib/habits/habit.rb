@@ -33,7 +33,8 @@ module Habits
                    yellow_zone=20*60*60, # 24 hours before deadline,
                    red_zone=6*60*60      #  6 -"-
                    )
-      @title, @days, @yellow_zone, @red_zone = title, days, yellow_zone, red_zone
+      set_title(title)
+      @days, @yellow_zone, @red_zone = days, yellow_zone, red_zone
       @status = Status.green
       @created_at = Time.now
       @events = []
@@ -45,14 +46,15 @@ module Habits
       save
     end
     
-    def filename
-      @title.downcase.gsub(' ', '_') + '.habit'
+    def file_path(title=@title)
+      File.join(HABITS_DIR, title.downcase + '.habit')
     end
     
     def save
       @@all = nil
+      FileUtils.rm_f(file_path(@old_title)) if @old_title
       FileUtils.mkdir_p HABITS_DIR
-      File.open(File.join(HABITS_DIR, filename), 'w') do |file|
+      File.open(file_path, 'w') do |file|
         file.write self.to_yaml
       end
       self
@@ -79,8 +81,14 @@ module Habits
     end
     
     def destroy
-      FileUtils.rm_f File.join(HABITS_DIR, filename)
+      FileUtils.rm_f file_path
       @@all = nil
+    end
+    
+    def set_title(title)
+      raise "No spaces or commas allowed in habit title" if title =~ /[\s,,]+/
+      @old_title = @title
+      @title = title
     end
     
   end

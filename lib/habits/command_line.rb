@@ -80,6 +80,20 @@ sub.register('show', ['TITLE'], 'Show activity of habit.') do |title|
   end
 end
 
+sub.register('split', ['TITLE'], 'Split a habit into days.') do |title|
+  h = Habits::Habit.find(title)
+  h.split!
+  puts "Habit \"#{title}\" split."
+end
+
+sub.register('join', ['TITLE', 'OTHER_TITLE'], 
+             'Join habits. First one is kept.') do |title, other_title|
+  habit = Habits::Habit.find(title)
+  other = Habits::Habit.find(other_title)
+  habit.join!(other)
+  puts "Habits \"#{title}\" and \"#{other_title}\" joined."
+end
+
 sub.default = 'list'
 
 sub.parse

@@ -8,7 +8,9 @@ module Habits
 
   # The habit class. Attached events describe activities etc.
   class Habit
-    HABITS_DIR = File.join(ENV['HOME'], '.habits')
+    HABITS_DIR  = File.join(ENV['HOME'], '.habits')
+    YELLOW_ZONE = 16*60*60 # 16 hours before deadline,
+    RED_ZONE    = 6*60*60      #  6 -"-
     
     def self.all
       @@all ||= begin
@@ -29,15 +31,15 @@ module Habits
     attr_reader :title, :days, :status, :events
     attr_accessor :yellow_zone, :red_zone
     
-    def initialize(title, days=['Mon'], 
-                   yellow_zone=20*60*60, # 24 hours before deadline,
-                   red_zone=6*60*60      #  6 -"-
-                   )
+    def initialize(title, days = ['Mon'], 
+                   yellow_zone = YELLOW_ZONE, 
+                   red_zone    = RED_ZONE,
+                   events      = [])
       set_title(title)
       @days, @yellow_zone, @red_zone = days, yellow_zone, red_zone
       @status = Status.green
       @created_at = Time.now
-      @events = []
+      @events = events
     end
     
     def add_event(event)
@@ -89,6 +91,32 @@ module Habits
       raise "No spaces or commas allowed in habit title" if title =~ /[\s,,]+/
       @old_title = @title
       @title = title
+    end
+    
+    def split
+      @days.map do |day|
+        events = @events.select{|event| event.applied_at.strftime('%a') == day}
+        Habit.new("#{@title}:#{day}", [day], YELLOW_ZONE, RED_ZONE, events)
+      end
+    end
+    
+    def split!
+      habits = split
+      habits.each{|habit| habit.save}
+      destroy
+      habits
+    end
+    
+    def join(habit)
+      @events += habit.events
+      @days += habit.days
+      @days.sort!{|a,b| Time::RFC2822_DAY_NAME.index(a) <=> Time::RFC2822_DAY_NAME.index(b)}
+    end
+    
+    def join!(habit)
+      join(habit)
+      save
+      habit.destroy
     end
     
   end

@@ -23,9 +23,18 @@ module Habits
     end
     
     def self.find(title)
-      h = Habits::Habit.all.detect{|h| h.title == title.strip}
+      h = Habit.all.detect {|h| h.title == title.strip}
       raise "No such habit found." unless h
       h
+    end
+    
+    # Join all habits with title 'title':something.
+    def self.join_all(title)
+      joinables = Habit.all.select {|habit| habit.title =~ /^#{title}:.+/}
+      raise "Habits not found." if joinables.size == 0
+      habit = Habit.find(title) rescue nil
+      habit ||= Habit.new(title, [])
+      joinables.each{|joinable| habit.join!(joinable)}
     end
     
     attr_reader :title, :days, :status, :events
@@ -119,6 +128,7 @@ module Habits
     def join(habit)
       @events += habit.events
       @days += habit.days
+      @days.uniq!
       @days.sort!{|a,b| Time::RFC2822_DAY_NAME.index(a) <=> Time::RFC2822_DAY_NAME.index(b)}
     end
     

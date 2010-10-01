@@ -34,8 +34,9 @@ module Habits
         if !activities.empty? or (day_diff > 0)
           statuses << Status.green
         else
-          deadline = Time.mktime(date.year, date.month, 
-                                 date.day + day_diff, 23, 59)
+          dl_date = date + day_diff
+          deadline = Time.mktime(dl_date.year, dl_date.month, 
+                                 dl_date.day, 23, 59)
           
           if Date.new(deadline.year, deadline.month, deadline.day).cweek != date.cweek
             statuses << Status.green

@@ -5,7 +5,7 @@ module Habits
   class Status
     include Comparable
     
-    VALUES = [:green, :yellow, :red, :missed, :on_hold]
+    VALUES = [:green, :yellow, :red, :missed]
     VALUES.each do |val|
       eval %Q(def self.#{val}; Status.new(#{val.inspect}) end)
     end

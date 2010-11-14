@@ -9,28 +9,42 @@ describe Habits::Status do
   end
   
   it "should resolve status green" do
-    h = Habits::Habit.new(['Mon'])  
+    h = Habits::Habit.new('test', ['Mon'])  
     Habits::Status.resolve(h, last_day(1,0,0)).should == Habits::Status.green
   end
   
   it "should resolve status yellow" do
-    h = Habits::Habit.new(['Mon'])  
+    h = Habits::Habit.new('test', ['Mon'])  
     
     Habits::Status.resolve(h, last_day(1,8,0)).should == Habits::Status.yellow
     Habits::Status.resolve(h, last_day(1,17,59)).should == Habits::Status.yellow
   end
   
   it "should resolve status red" do
-    h = Habits::Habit.new(['Mon'])
+    h = Habits::Habit.new('test', ['Mon'])
     
     Habits::Status.resolve(h, last_day(1,18,0)).should == Habits::Status.red
     Habits::Status.resolve(h, last_day(1,23,59)).should == Habits::Status.red
   end
   
   it "should resolve status missed" do
-    h = Habits::Habit.new(['Mon'])  
+    h = Habits::Habit.new('test', ['Mon'])  
     
     Habits::Status.resolve(h, last_day(2,0,0)).should == Habits::Status.missed
+  end
+  
+  it "should resolve status for two day habit" do
+    h = Habits::Habit.new('test', ['Mon', 'Tue'])
+    e = Habits::Events::Activity.new
+    h.add_event(e, last_day(1, 20, 00))
+    Habits::Status.resolve(h, last_day(2,23,59)).should == Habits::Status.red
+  end
+  
+  it "should resolve status for two day habit (2)" do
+    h = Habits::Habit.new('test', ['Mon', 'Tue'])
+    e = Habits::Events::Activity.new
+    h.add_event(e, last_day(2, 20, 00))
+    Habits::Status.resolve(h, last_day(2,23,59)).should == Habits::Status.missed
   end
   
 end

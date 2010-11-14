@@ -11,7 +11,7 @@ module Habits::Events
       @duration = duration
     end
   
-    def apply(habit)
+    def apply(habit, time)
       super
     end
     

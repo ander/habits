@@ -10,7 +10,7 @@ module Habits
   class Habit
     HABITS_DIR  = File.join(ENV['HOME'], '.habits')
     YELLOW_ZONE = 16*60*60 # 16 hours before deadline,
-    RED_ZONE    = 6*60*60      #  6 -"-
+    RED_ZONE    = 6*60*60  #  6 -"-
     
     def self.all
       @@all ||= begin
@@ -52,8 +52,8 @@ module Habits
       @events = events
     end
     
-    def add_event(event)
-      event.apply(self)
+    def add_event(event, time=Time.now)
+      event.apply(self, time)
       @events << event
       save
     end

@@ -22,6 +22,14 @@ module Habits
       end
     end
     
+    def self.all_not_on_hold
+      all.select{|habit| habit.status != Status.on_hold}
+    end
+    
+    def self.all_on_hold
+      all.select{|habit| habit.status == Status.on_hold}
+    end
+    
     def self.find(title)
       h = Habit.all.detect {|h| h.title == title.strip}
       raise "No such habit found." unless h
@@ -136,6 +144,17 @@ module Habits
       join(habit)
       save
       habit.destroy
+    end
+    
+    def hold
+      @status = Status.on_hold
+      save
+    end
+    
+    def unhold
+      @status = Status.green
+      @status = Status.resolve(self)
+      save
     end
     
   end

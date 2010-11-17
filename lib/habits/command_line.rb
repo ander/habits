@@ -5,7 +5,7 @@ require 'habits/subcommand'
 
 sub = Subcommand.new
 
-sub.register('whip', [], 'Use the whip') do
+sub.register('whip', [], 'Use the whip.') do
   Habits::Whip.use
 end
   
@@ -23,7 +23,7 @@ end
 sub.register('list', [], 'List habits.') do
   puts "\nHABIT                     DAYS                           STATUS     YELLOW/RED"
   puts "===============================================================================\n"
-  Habits::Habit.all.each do |habit|
+  Habits::Habit.all_not_on_hold.each do |habit|
     printf("%-25s %-30s %-10s [%dh / %dh]\n", 
            habit.title, habit.days.join(','),
            habit.status.value.to_s.capitalize,
@@ -31,6 +31,7 @@ sub.register('list', [], 'List habits.') do
            (habit.red_zone / (60*60)))
   end
   puts "===============================================================================\n"
+  puts "\nOn Hold: #{Habits::Habit.all_on_hold.map{|h| h.title}.join(', ')}.\n"
   puts "\nWeek #{Date.today.cweek} | Total #{Habits::Habit.all.size} habits.\n\n"
 end
 
@@ -93,6 +94,19 @@ sub.register('join', ['TITLE', '[OTHER_TITLE]'],
     puts "Habits \"#{title}\" and \"#{other_title}\" joined."
   end
 end
+
+sub.register('hold', ['TITLE'], 'Put a habit on hold.') do |title|
+  h = Habits::Habit.find(title)
+  h.hold
+  puts "Habit \"#{title}\" is now on hold."
+end
+
+sub.register('unhold', ['TITLE'], 'Unhold a habit.') do |title|
+  h = Habits::Habit.find(title)
+  h.unhold
+  puts "Habit \"#{title}\" is not on hold anymore."
+end
+
 
 sub.default = 'list'
 

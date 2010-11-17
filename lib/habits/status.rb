@@ -5,7 +5,7 @@ module Habits
   class Status
     include Comparable
     
-    VALUES = [:green, :yellow, :red, :missed]
+    VALUES = [:green, :yellow, :red, :missed, :on_hold]
     VALUES.each do |val|
       eval %Q(def self.#{val}; Status.new(#{val.inspect}) end)
     end
@@ -24,6 +24,8 @@ module Habits
     # Resolves the status of a habit.
     # Status starts fresh every week.
     def self.resolve(habit, time=Time.now)
+      return Status.on_hold if habit.status == Status.on_hold
+      
       statuses = []
       date = Date.new(time.year, time.month, time.day)
       

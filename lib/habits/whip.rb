@@ -10,6 +10,7 @@ module Habits
     # Add block to be executed when status changes to given status.
     # A habit which changes to this status is passed to the block.
     def on(status, &blk)
+      raise "No block given" if blk.nil?
       @@transitions[status] = blk
     end
     

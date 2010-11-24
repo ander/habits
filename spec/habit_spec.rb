@@ -1,4 +1,5 @@
 require 'habits/habit'
+require 'habits/mock_data_store'
 
 describe Habits::Habit do
   

@@ -1,5 +1,5 @@
 require 'habits/habit'
-
+require 'habits/mock_data_store'
 
 describe Habits::Status do
   def last_day(wday, hour, minutes) # in wday, 0 = sunday, 1 = monday...

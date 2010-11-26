@@ -2,6 +2,17 @@ require 'time'
 require 'date'
 require 'habits'
 require 'habits/subcommand'
+require 'fileutils'
+
+if !File.exists?(Habits::Habit::HABITS_DIR)
+  FileUtils.mkdir Habits::Habit::HABITS_DIR
+  FileUtils.cp File.join(File.dirname(__FILE__), '..', '..', 'whip_config.rb'), 
+               Habits::Habit::HABITS_DIR+"/"
+  puts "\n*** Copied default whip_config.rb to #{Habits::Habit::HABITS_DIR}"
+  puts "*** Please edit it to suit you."
+  puts "*** Also, consider adding line '0   *   *   *   *   /usr/bin/habits whip'"
+  puts "*** to your crontab.\n"
+end
 
 sub = Subcommand.new
 
@@ -31,7 +42,12 @@ sub.register('list', [], 'List habits.') do
            (habit.red_zone / (60*60)))
   end
   puts "===============================================================================\n"
-  puts "\nOn Hold: #{Habits::Habit.all_on_hold.map{|h| h.title}.join(', ')}.\n"
+  on_hold = Habits::Habit.all_on_hold
+  
+  if on_hold.size > 0
+    puts "\nOn Hold: #{on_hold.map{|h| h.title}.join(', ')}.\n"
+  end
+  
   puts "\nWeek #{Date.today.cweek} | Total #{Habits::Habit.all.size} habits.\n\n"
 end
 

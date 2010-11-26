@@ -7,6 +7,8 @@
 def dialog(title, txt)
   system %Q(say '#{title}')
   system %Q(osascript -e 'tell app "System Events" to display dialog "#{txt}"')
+  # or if you have 'ruby-growl' gem installed
+  # system "growl -h localhost -m '#{txt}'"
 end
 
 Habits::Whip.on(:yellow) do |habit|

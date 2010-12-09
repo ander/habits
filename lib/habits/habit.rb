@@ -30,6 +30,10 @@ module Habits
       all.select{|habit| habit.status == Status.on_hold}
     end
     
+    def self.missed_count
+      all.select{|habit| habit.status == Status.missed}.size
+    end
+    
     def self.find(title)
       h = Habit.all.detect {|h| h.title == title.strip}
       raise "No such habit found." unless h

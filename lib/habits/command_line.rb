@@ -48,7 +48,8 @@ sub.register('list', [], 'List habits.') do
     puts "\nOn Hold: #{on_hold.map{|h| h.title}.join(', ')}.\n"
   end
   
-  puts "\nWeek #{Date.today.cweek} | Total #{Habits::Habit.all.size} habits.\n\n"
+  puts "\nWeek #{Date.today.cweek} | Total #{Habits::Habit.all.size} habits "+
+       "| #{Habits::Habit.missed_count} missed\n\n"
 end
 
 sub.register('zones', ['TITLE','YELLOW_ZONE','RED_ZONE'], 

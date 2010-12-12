@@ -11,6 +11,7 @@ module Habits
     HABITS_DIR  = File.join(ENV['HOME'], '.habits')
     YELLOW_ZONE = 16*60*60 # 16 hours before deadline,
     RED_ZONE    = 6*60*60  #  6 -"-
+    DAYS        = Time::RFC2822_DAY_NAME
     
     def self.all
       @@all ||= begin
@@ -116,8 +117,8 @@ module Habits
     end
     
     def set_days(days)
-      if days.detect{|d| Time::RFC2822_DAY_NAME.index(d).nil?}
-        raise "Valid days are #{Time::RFC2822_DAY_NAME.join(',')}"
+      if days.detect{|d| DAYS.index(d).nil?}
+        raise "Valid days are #{DAYS.join(',')}"
       else
         @days = days
       end
@@ -141,7 +142,7 @@ module Habits
       @events += habit.events
       @days += habit.days
       @days.uniq!
-      @days.sort!{|a,b| Time::RFC2822_DAY_NAME.index(a) <=> Time::RFC2822_DAY_NAME.index(b)}
+      @days.sort!{|a,b| DAYS.index(a) <=> DAYS.index(b)}
     end
     
     def join!(habit)

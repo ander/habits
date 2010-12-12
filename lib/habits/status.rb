@@ -31,18 +31,17 @@ module Habits
       
       habit.days.each do |day|
         activities = habit.activities_on_week(date.cweek, day)
-        day_diff = Time::RFC2822_DAY_NAME.index(day) - date.wday
+        day_diff = Habit::DAYS.index(day) - date.wday
+        day_diff -= 7 if day_diff > 0
         
-        if !activities.empty? or (day_diff > 0)
+        if !activities.empty?
           statuses << Status.green
         else
           dl_date = date + day_diff
           deadline = Time.mktime(dl_date.year, dl_date.month, 
                                  dl_date.day, 23, 59)
           
-          if Date.new(deadline.year, deadline.month, deadline.day).cweek != date.cweek
-            statuses << Status.green
-          elsif time > deadline
+          if time > deadline
             statuses << Status.missed
           elsif time > (deadline - habit.red_zone)
             statuses << Status.red

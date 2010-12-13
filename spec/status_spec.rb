@@ -47,6 +47,11 @@ describe Habits::Status do
     Habits::Status.resolve(h, last_day(2,23,59)).should == Habits::Status.missed
   end
   
+  it "should resolve status for a two day habit (3)" do
+    h = Habits::Habit.new('test', ['Thu', 'Sun'])
+    Habits::Status.resolve(h, last_day(1,12,00)).should == Habits::Status.green
+  end
+  
   it "should resolve status for a three day habit" do
     h = Habits::Habit.new('test', ['Mon', 'Thu', 'Sun'])
     e = Habits::Events::Activity.new

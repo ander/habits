@@ -41,7 +41,9 @@ module Habits
           deadline = Time.mktime(dl_date.year, dl_date.month, 
                                  dl_date.day, 23, 59)
           
-          if time > deadline
+          if Date.new(deadline.year, deadline.month, deadline.day).cweek != date.cweek
+            statuses << Status.green
+          elsif time > deadline
             statuses << Status.missed
           elsif time > (deadline - habit.red_zone)
             statuses << Status.red

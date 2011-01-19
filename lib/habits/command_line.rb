@@ -45,7 +45,10 @@ sub.register('list', [], 'List habits.') do
   on_hold = Habits::Habit.all_on_hold
   
   if on_hold.size > 0
-    puts "\nOn Hold: #{on_hold.map{|h| h.title}.join(', ')}.\n"
+    puts "\nOn Hold:\n--------" 
+    on_hold.each do |habit|
+      puts "* #{habit.title}"
+    end
   end
   
   puts "\nWeek #{Date.today.cweek} | Total #{Habits::Habit.all.size} habits "+

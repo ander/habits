@@ -26,7 +26,8 @@ sub.register('delete', ['TITLE'], 'Delete habit.') do |title|
   puts "#{h.title} deleted."
 end
   
-sub.register('create', ['TITLE','DAYS'], 'Create a new habit.') do |title, days|
+sub.register('create', ['TITLE','DAYS'], 
+             'Create a new habit. DAYS is comma separated list of Mon,Tue,Wed..') do |title, days|
   Habits::Habit.new(title, days.split(',')).save
   puts "Habit \"#{title}\" created."
 end
@@ -127,7 +128,12 @@ sub.register('unhold', ['TITLE'], 'Unhold a habit.') do |title|
   puts "Habit \"#{title}\" is not on hold anymore."
 end
 
+sub.register('help', [], 'See the list of commands.') do
+  sub.help
+end
 
-sub.default = 'list'
+sub.default do
+  puts "Use 'habits help' to see the list of commands. "
+end
 
 sub.parse

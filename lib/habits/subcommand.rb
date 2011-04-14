@@ -38,9 +38,12 @@ class Subcommand
     end
   end
 
+  attr_accessor :auto_help
+
   def initialize
     @default = nil
     @subs = {}
+    @auto_help = false
   end
   
   # Register a command with name, arguments, description, and block (blk).
@@ -71,14 +74,18 @@ class Subcommand
     
     sub = @subs[args.shift]
     
-    help and return if sub.nil?
+    if sub.nil?
+      puts "Unknown command."
+      help if auto_help
+      return
+    end
     
     begin
       sub.parse(args)
       sub.call
     rescue Exception => e
       puts e.message
-      help
+      help if auto_help
     end
   end
   

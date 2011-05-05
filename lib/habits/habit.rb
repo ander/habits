@@ -76,6 +76,7 @@ module Habits
     end
     
     def save
+      validate_zones
       @@all = nil
       FileUtils.rm_f(file_path(@old_title)) if @old_title
       FileUtils.mkdir_p HABITS_DIR
@@ -160,6 +161,10 @@ module Habits
       @status = Status.green
       @status = Status.resolve(self)
       save
+    end
+    
+    def validate_zones
+      raise "Yellow zone must be before red zone." if self.yellow_zone <= self.red_zone
     end
     
   end

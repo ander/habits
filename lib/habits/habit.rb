@@ -97,10 +97,11 @@ module Habits
     end
     
     def activities_on_week(week, day=nil)
-      activities = @events.select do |e| 
-        e.is_a?(Events::Activity) and Date.new(e.applied_at.year, 
-                                               e.applied_at.month,
-                                               e.applied_at.day).cweek == week
+      activities = @events.select do |e|
+        e.is_a?(Events::Activity) and e.applied_at.year == Date.today.year and 
+                                  Date.new(e.applied_at.year, 
+                                           e.applied_at.month,
+                                           e.applied_at.day).cweek == week
       end
       activities = activities.select{|a| a.applied_at.strftime('%a') == day} if day
       activities
